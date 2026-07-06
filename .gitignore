@@ -7,3 +7,32 @@ dist/
 *.suo
 *.cache
 *.log
+
+# ========================================
+# Soft Compiler Specific Ignores
+# ========================================
+
+# AI/Documentation files
+phy/
+*.ai.md
+*.prompt.md
+*-ai-*.md
+
+# Test files and directories
+test-single/
+tests/
+test-output/
+test-results.md
+playwright.config.ts
+*.spec.ts
+*.test.ts
+
+# Debug files
+debug_*.ts
+debug_*.js
+
+# Temporary/Status files
+CHECKLIST.md
+STATUS.md
+PHASE_*.md
+FINAL_SUMMARY.md
