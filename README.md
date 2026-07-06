@@ -39,6 +39,7 @@ export class HelloPage {
 
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Node.js 18+](https://nodejs.org/)
+- [VS Code](https://code.visualstudio.com/) (recommended)
 
 ### Quick Install
 
@@ -56,6 +57,21 @@ setx PATH "%PATH%;%CD%\bin\Release\net8.0"
 # Verify installation
 soft --version
 ```
+
+### VS Code Extension
+
+Install the Soft Language extension for syntax highlighting and IntelliSense:
+
+```bash
+# Download from releases
+code --install-extension soft-vscode-extension-1.0.0.vsix
+```
+
+Or install manually:
+1. Download `soft-vscode-extension-1.0.0.vsix` from [Releases](https://github.com/XHAlawa/Soft-Lang/releases)
+2. Open VS Code → Extensions → `...` → Install from VSIX
+
+See [VSCODE-EXTENSION.md](VSCODE-EXTENSION.md) for details.
 
 ### Manual Setup
 
