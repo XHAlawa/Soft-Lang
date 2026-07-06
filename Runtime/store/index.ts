@@ -1,0 +1,1 @@
+export { statePersistence } from './store';

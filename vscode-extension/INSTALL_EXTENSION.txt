@@ -1,0 +1,69 @@
+# Installing the Soft VS Code Extension
+
+## Prerequisites
+- Node.js and npm installed
+- VS Code installed
+
+## Installation Steps
+
+1. Navigate to the extension directory:
+   cd vscode-extension
+
+2. Install dependencies:
+   npm install
+
+3. Compile the extension:
+   npm run compile
+   (or: tsc -p ./)
+
+4. Package the extension:
+   npm run package
+   (or: vsce package)
+
+5. Install in VS Code:
+   - Open VS Code
+   - Press Ctrl+Shift+P (Cmd+Shift+P on Mac)
+   - Type "Extensions: Install from VSIX"
+   - Select the generated .vsix file
+
+## Development Mode
+
+To test the extension during development:
+
+1. Open the vscode-extension folder in VS Code
+2. Press F5 to launch Extension Development Host
+3. Open a .s file to test the extension
+
+## Features
+
+The extension provides:
+
+✅ Syntax highlighting for .s files
+✅ Code snippets (type 's' + Tab to see options)
+✅ IntelliSense for decorators (@Page, @Service, @Route, etc.)
+✅ IntelliSense for directives (@if, @foreach, etc.)
+✅ IntelliSense for attributes (@bind, @validate, etc.)
+✅ Hover documentation
+✅ Build and dev server commands
+
+## Usage
+
+### Snippets
+- `scomp` - Create component
+- `sservice` - Create service
+- `spagedi` - Create page with DI
+- `soninit` - Add onInit hook
+- `sonmounted` - Add onMounted hook
+- `sondestroy` - Add onDestroy hook
+- `svalreq` - Add required validation
+- `svalemail` - Add email validation
+- `sforminput` - Create validated input
+
+### Commands
+- `Soft: Build Project` - Build the current project
+- `Soft: Start Dev Server` - Start development server
+
+### IntelliSense
+- Type `@` to see decorator completions
+- Type `@` in templates to see directive completions
+- Hover over decorators to see documentation

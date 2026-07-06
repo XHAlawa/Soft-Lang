@@ -1,0 +1,20 @@
+{
+  "en": {
+    "welcome": "Welcome to Soft Framework!",
+    "greeting": "Hello, how are you today?",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "es": {
+    "welcome": "¡Bienvenido al Framework Soft!",
+    "greeting": "Hola, ¿cómo estás hoy?",
+    "submit": "Enviar",
+    "cancel": "Cancelar"
+  },
+  "fr": {
+    "welcome": "Bienvenue dans le Framework Soft!",
+    "greeting": "Bonjour, comment allez-vous aujourd'hui?",
+    "submit": "Soumettre",
+    "cancel": "Annuler"
+  }
+}

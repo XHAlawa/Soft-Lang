@@ -1,0 +1,38 @@
+{
+  "profiles": {
+    "Debug Build (todo-app)": {
+      "commandName": "Project",
+      "commandLineArgs": "build --verbose",
+      "workingDirectory": "$(ProjectDir)",
+      "environmentVariables": {
+        "SOFT_VERBOSE": "1"
+      }
+    },
+    "Debug Build (simple-test)": {
+      "commandName": "Project",
+      "commandLineArgs": "build --verbose --project \"$(ProjectDir)examples\\simple-test\"",
+      "workingDirectory": "$(ProjectDir)",
+      "environmentVariables": {
+        "SOFT_VERBOSE": "1"
+      }
+    },
+    "Debug Dev Server (todo-app)": {
+      "commandName": "Project",
+      "commandLineArgs": "dev --open false",
+      "workingDirectory": "$(ProjectDir)",
+      "environmentVariables": {}
+    },
+    "Debug Clean": {
+      "commandName": "Project",
+      "commandLineArgs": "clean",
+      "workingDirectory": "$(ProjectDir)",
+      "environmentVariables": {}
+    },
+    "Production Build": {
+      "commandName": "Project",
+      "commandLineArgs": "build --production",
+      "workingDirectory": "$(ProjectDir)",
+      "environmentVariables": {}
+    }
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "Soft Component": {
+    "prefix": "scomp",
+    "body": [
+      "@Template",
+      "<div class=\"${1:component}\">",
+      "    $0",
+      "</div>",
+      "",
+      "@Code",
+      "export class ${2:Component} {",
+      "    ",
+      "}",
+      "",
+      "@Style(scoped)",
+      ".${1:component} {",
+      "    ",
+      "}"
+    ],
+    "description": "Create a new Soft component"
+  },
+  "State Property": {
+    "prefix": "sstate",
+    "body": [
+      "@State",
+      "${1:property} = ${2:value};"
+    ],
+    "description": "Add @State property"
+  },
+  "State with Persistence": {
+    "prefix": "sstatep",
+    "body": [
+      "@State(persist: true)",
+      "${1:property} = ${2:value};"
+    ],
+    "description": "Add @State property with persistence"
+  },
+  "Computed Property": {
+    "prefix": "scomputed",
+    "body": [
+      "@Computed",
+      "get ${1:property}() {",
+      "    return ${2:value};",
+      "}"
+    ],
+    "description": "Add @Computed property"
+  },
+  "Watch Property": {
+    "prefix": "swatch",
+    "body": [
+      "@Watch('${1:property}')",
+      "${2:handler}(newValue: any, oldValue: any) {",
+      "    $0",
+      "}"
+    ],
+    "description": "Add @Watch handler"
+  },
+  "Prop": {
+    "prefix": "sprop",
+    "body": [
+      "@Prop({ ${1:required: true} })",
+      "${2:property}: ${3:string};"
+    ],
+    "description": "Add @Prop"
+  },
+  "If Directive": {
+    "prefix": "sif",
+    "body": [
+      "@if(${1:condition}) {",
+      "    $0",
+      "}"
+    ],
+    "description": "Add @if directive"
+  },
+  "Foreach Directive": {
+    "prefix": "sforeach",
+    "body": [
+      "@foreach(${1:item} in ${2:items})",
+      "<${3:div} @key=\"${1:item}.id\">",
+      "    @(${1:item}.$0)",
+      "</${3:div}>"
+    ],
+    "description": "Add @foreach directive"
+  },
+  "Slot": {
+    "prefix": "sslot",
+    "body": [
+      "@slot(name: \"${1:default}\") {",
+      "    $0",
+      "}"
+    ],
+    "description": "Add @slot directive"
+  },
+  "Bind": {
+    "prefix": "sbind",
+    "body": [
+      "@bind:${1:value}=\"${2:property}\""
+    ],
+    "description": "Add @bind attribute"
+  },
+  "Click": {
+    "prefix": "sclick",
+    "body": [
+      "@click=\"${1:handler}()\""
+    ],
+    "description": "Add @click attribute"
+  },
+  "Custom Directive": {
+    "prefix": "scustom",
+    "body": [
+      "@custom('${1:namespace}:${2:name}')",
+      "export class ${3:Directive} {",
+      "    mounted(el: HTMLElement, value: any) {",
+      "        $0",
+      "    }",
+      "    ",
+      "    updated(el: HTMLElement, value: any, oldValue: any) {",
+      "        ",
+      "    }",
+      "    ",
+      "    unmounted(el: HTMLElement, value: any) {",
+      "        ",
+      "    }",
+      "}"
+    ],
+    "description": "Create custom directive"
+  },
+  "Service": {
+    "prefix": "sservice",
+    "body": [
+      "@Service",
+      "",
+      "@Code",
+      "export class ${1:MyService} {",
+      "    $0",
+      "}"
+    ],
+    "description": "Create a service with @Service decorator"
+  },
+  "Page with DI": {
+    "prefix": "spagedi",
+    "body": [
+      "@Page",
+      "@Route(\"/${1:path}\")",
+      "",
+      "@Template",
+      "<div>",
+      "    $0",
+      "</div>",
+      "",
+      "@Code",
+      "export class ${2:PageName} {",
+      "    constructor(private ${3:service}: ${4:ServiceType}) {}",
+      "}"
+    ],
+    "description": "Create a page with dependency injection"
+  },
+  "Lifecycle onInit": {
+    "prefix": "soninit",
+    "body": [
+      "onInit() {",
+      "    $0",
+      "}"
+    ],
+    "description": "Add onInit lifecycle hook"
+  },
+  "Lifecycle onMounted": {
+    "prefix": "sonmounted",
+    "body": [
+      "onMounted() {",
+      "    $0",
+      "}"
+    ],
+    "description": "Add onMounted lifecycle hook"
+  },
+  "Lifecycle onUpdated": {
+    "prefix": "sonupdated",
+    "body": [
+      "onUpdated() {",
+      "    $0",
+      "}"
+    ],
+    "description": "Add onUpdated lifecycle hook"
+  },
+  "Lifecycle onDestroy": {
+    "prefix": "sondestroy",
+    "body": [
+      "onDestroy() {",
+      "    $0",
+      "}"
+    ],
+    "description": "Add onDestroy lifecycle hook"
+  },
+  "All Lifecycle Hooks": {
+    "prefix": "lifecycle",
+    "body": [
+      "onInit() {",
+      "    // Component initialized",
+      "    $1",
+      "}",
+      "",
+      "onMounted() {",
+      "    // Component mounted to DOM",
+      "    $2",
+      "}",
+      "",
+      "onUpdated() {",
+      "    // Component updated",
+      "    $3",
+      "}",
+      "",
+      "onDestroy() {",
+      "    // Component cleanup",
+      "    $4",
+      "}"
+    ],
+    "description": "All lifecycle hooks"
+  }
+}

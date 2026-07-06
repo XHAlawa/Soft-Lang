@@ -1,0 +1,56 @@
+{
+  "name": "Soft Dark",
+  "type": "dark",
+  "colors": {},
+  "tokenColors": [
+    {
+      "scope": "storage.type.decorator.soft",
+      "settings": {
+        "foreground": "#FF8C00",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "scope": "meta.decorator.soft",
+      "settings": {
+        "foreground": "#FF8C00"
+      }
+    },
+    {
+      "scope": "keyword.control.directive.soft",
+      "settings": {
+        "foreground": "#FF8C00"
+      }
+    },
+    {
+      "scope": "punctuation.definition.tag.end.soft",
+      "settings": {
+        "foreground": "#FFFFFF"
+      }
+    },
+    {
+      "scope": "punctuation.definition.string.begin.soft",
+      "settings": {
+        "foreground": "#FFFFFF"
+      }
+    },
+    {
+      "scope": "punctuation.definition.string.end.soft",
+      "settings": {
+        "foreground": "#FFFFFF"
+      }
+    },
+    {
+      "scope": "punctuation.section.embedded.begin.soft",
+      "settings": {
+        "foreground": "#FFFFFF"
+      }
+    },
+    {
+      "scope": "punctuation.section.embedded.end.soft",
+      "settings": {
+        "foreground": "#FFFFFF"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "soft-testing",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:open": "playwright test --ui",
+    "test:codegen": "playwright codegen http://localhost:3000",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

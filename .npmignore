@@ -1,0 +1,29 @@
+# Source files
+*.cs
+*.csproj
+*.sln
+
+# Build artifacts
+obj/
+bin/Debug/
+.vs/
+
+# Examples
+examples/
+docs/
+
+# Tests
+Tests/
+*.Tests/
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Keep only distribution files
+!bin/Release/
+!Runtime/

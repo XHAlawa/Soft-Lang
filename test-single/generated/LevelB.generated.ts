@@ -1,0 +1,159 @@
+import { BindTest } from './BindTest.generated';
+import { Child } from './Child.generated';
+import { ClassTest } from './ClassTest.generated';
+import { Counter } from './Counter.generated';
+import { DeepNestTest } from './DeepNestTest.generated';
+import { EventModifierTest } from './EventModifierTest.generated';
+import { FormDirectiveTest } from './FormDirectiveTest.generated';
+import { FormTest } from './FormTest.generated';
+import { IfTest } from './IfTest.generated';
+import { LevelA } from './LevelA.generated';
+import { LevelC } from './LevelC.generated';
+import { LifecycleTest } from './LifecycleTest.generated';
+import { LocalizationTest } from './LocalizationTest.generated';
+import { ManualFormTest } from './ManualFormTest.generated';
+import { MultiBindTest } from './MultiBindTest.generated';
+import { MultiEventTest } from './MultiEventTest.generated';
+import { MultiInterpTest } from './MultiInterpTest.generated';
+import { NestedIfTest } from './NestedIfTest.generated';
+import { ParamTest } from './ParamTest.generated';
+import { Parent } from './Parent.generated';
+import { ProxyTest } from './ProxyTest.generated';
+import { SimpleCodeTest } from './SimpleCodeTest.generated';
+import { StateTest } from './StateTest.generated';
+import { StyleTest } from './StyleTest.generated';
+import { SwitchTest } from './SwitchTest.generated';
+import { TextLiteralTest } from './TextLiteralTest.generated';
+
+// Soft decorators:
+// @Component
+
+export class LevelB {
+
+    // Router properties (injected at runtime)
+    $route?: any;
+    $navigate?: any;
+
+    // Lifecycle state
+    private __mounted = false;
+    private __container?: HTMLElement;
+    private __cacheStore = new Map<string, any>();
+    private __cleanup: (() => void)[] = [];
+    private __validationErrors?: Record<string, string | null>;
+    private __touchedFields?: Record<string, boolean>;
+    private __renderScheduled = false;
+
+    // Schedule render with debouncing to prevent multiple queued renders
+    private __scheduleRender(): void {
+        if (this.__renderScheduled) return;
+        this.__renderScheduled = true;
+        queueMicrotask(() => {
+            if (this.__mounted && this.__container) {
+                this.__render(this.__container);
+            }
+        });
+    }
+
+    // Localization helper
+    private __localize(key: string, fallback?: string): string {
+        return (globalThis as any).__softLocalize?.(key, fallback) || fallback || key;
+    }
+
+    // Component disposal (compiler-generated)
+    __dispose(): void {
+        // Dispose children first
+        (this as any).__disposeChildren?.();
+        
+        // Then own cleanup
+        (this as any).onDestroy?.();
+        this.__cleanup.forEach(fn => fn());
+        this.__cleanup = [];
+        this.__mounted = false;
+    }
+
+    // Auto-generated template rendering code
+    public __render(container: HTMLElement): void {
+        // Store container reference for re-renders
+        this.__container = container;
+        // Cancel any pending render to prevent double-rendering
+        this.__renderScheduled = false;
+
+        // Differential DOM update: only rebuild if first render or structure changed
+        const isFirstRender = !this.__mounted || container.children.length === 0;
+    
+        if (isFirstRender) {
+            // First render: build full DOM
+            container.innerHTML = '';
+        } else {
+            // Subsequent renders: preserve DOM structure, only update dynamic content
+            // Focus preservation is automatic since we don't destroy elements
+        }
+
+        let el0: HTMLDivElement;
+        if (isFirstRender) {
+            el0 = document.createElement('div') as HTMLDivElement;
+        } else {
+            el0 = container.children[-1] as HTMLDivElement;
+            if (!el0 || el0.tagName.toLowerCase() !== 'div') {
+                // Structure changed, rebuild this element
+                el0 = document.createElement('div') as HTMLDivElement;
+                if (container.children[-1]) {
+                    container.replaceChild(el0, container.children[-1]);
+                } else {
+                        let el1: HTMLElement;
+        if (isFirstRender) {
+            el1 = document.createElement('slot') as HTMLElement;
+        } else {
+            el1 = container.children[0] as HTMLElement;
+            if (!el1 || el1.tagName.toLowerCase() !== 'slot') {
+                // Structure changed, rebuild this element
+                el1 = document.createElement('slot') as HTMLElement;
+                if (container.children[0]) {
+                    container.replaceChild(el1, container.children[0]);
+                } else {
+                    container.appendChild(el1);
+                }
+            }
+        }
+
+        if (isFirstRender) {
+            container.appendChild(el1);
+        }
+    container.appendChild(el0);
+                }
+            }
+        }
+
+        el0.setAttribute('class', 'level-b');
+        if (isFirstRender) {
+                let el1: HTMLElement;
+        if (isFirstRender) {
+            el1 = document.createElement('slot') as HTMLElement;
+        } else {
+            el1 = container.children[0] as HTMLElement;
+            if (!el1 || el1.tagName.toLowerCase() !== 'slot') {
+                // Structure changed, rebuild this element
+                el1 = document.createElement('slot') as HTMLElement;
+                if (container.children[0]) {
+                    container.replaceChild(el1, container.children[0]);
+                } else {
+                    container.appendChild(el1);
+                }
+            }
+        }
+
+        if (isFirstRender) {
+            container.appendChild(el1);
+        }
+    container.appendChild(el0);
+        }
+
+        if (!this.__mounted && (this as any).onMounted) {
+            this.__mounted = true;
+            setTimeout(() => (this as any).onMounted?.(), 0);
+        } else if ((this as any).onUpdated) {
+            setTimeout(() => (this as any).onUpdated?.(), 0);
+        }
+    }
+
+}

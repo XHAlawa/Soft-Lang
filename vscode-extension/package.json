@@ -1,0 +1,98 @@
+{
+  "name": "soft-language",
+  "displayName": "Soft Language Support",
+  "description": "Language support for Soft framework (.s files)",
+  "version": "1.0.0",
+  "publisher": "soft-framework",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:soft"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Soft",
+      "properties": {
+        "soft.enableTypeScriptIntelliSense": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable TypeScript IntelliSense in @Code blocks"
+        },
+        "soft.autoClosingTags": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically close HTML tags in @Template blocks"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "soft.build",
+        "title": "Soft: Build Project"
+      },
+      {
+        "command": "soft.dev",
+        "title": "Soft: Start Dev Server"
+      }
+    ],
+    "languages": [
+      {
+        "id": "soft",
+        "aliases": [
+          "Soft",
+          "soft"
+        ],
+        "extensions": [
+          ".s"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/soft-light.png",
+          "dark": "./icons/soft-dark.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "soft",
+        "scopeName": "source.soft",
+        "path": "./syntaxes/soft.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.typescript": "typescript",
+          "meta.embedded.block.css": "css"
+        }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "soft",
+        "path": "./snippets/soft.json"
+      }
+    ],
+    "themes": [
+      {
+        "label": "Soft Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/soft-dark.json"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^6.0.3",
+    "vsce": "^2.15.0"
+  }
+}
