@@ -24,16 +24,25 @@ public class StaticContentAnalyzer
     
     private bool IsStaticElement(TemplateElement element)
     {
-        // Has dynamic attributes?
-        if (element.Attributes.Any(a => 
-            a.Name.StartsWith("@") || 
-            a.Value?.Contains("{") == true))
+        // CRITICAL: Any @ attribute makes it dynamic (events, bindings, directives, etc.)
+        if (element.Attributes.Any(a => a.Name.StartsWith("@")))
+        {
+            return false;
+        }
+        
+        // Has interpolations in attribute values?
+        if (element.Attributes.Any(a => a.Value?.Contains("{") == true))
         {
             return false;
         }
         
         // Has dynamic children?
-        return element.ChildNodes.All(IsStatic);
+        if (!element.ChildNodes.All(IsStatic))
+        {
+            return false;
+        }
+        
+        return true;
     }
     
     public List<TemplateNode> GetStaticSubtree(TemplateElement element)
