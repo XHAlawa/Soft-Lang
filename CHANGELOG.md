@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.1] - 2026-07-07 🔧
+
+### 🐛 Bug Fixes
+
+**Fixed npm Dependency Issue**
+- Removed non-existent `@soft/compiler` npm package from project templates
+- Projects now work standalone with just `soft` CLI
+- Updated `package.json` to only include TypeScript and esbuild
+- Users can now run `soft dev` directly without npm install errors
+
+**Improved Developer Experience**
+- Better instructions in `soft new` command output
+- Projects work immediately after creation
+- No external package dependencies required
+
+---
+
 ## [1.0.0] - 2026-07-06 🚀
 
 ### 🎉 Initial Release - Production Ready!
