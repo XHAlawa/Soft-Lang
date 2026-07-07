@@ -97,14 +97,14 @@ public class BindingAttributeProcessor : IAttributeProcessor
         if (debounceMs > 0)
         {
             // Generate debounced handler
-            code.AppendLine($"    let {elemVar}_debounceTimer;");
-            code.AppendLine($"    {elemVar}.addEventListener('{eventName}', (e) => {{");
+            code.AppendLine($"    let {elemVar}_debounceTimer: any;");
+            code.AppendLine($"    {elemVar}.addEventListener('{eventName}', (e: Event) => {{");
             code.AppendLine($"        clearTimeout({elemVar}_debounceTimer);");
             code.AppendLine($"        {elemVar}_debounceTimer = setTimeout(() => {{");
         }
         else
         {
-            code.AppendLine($"    {elemVar}.addEventListener('{eventName}', (e) => {{");
+            code.AppendLine($"    {elemVar}.addEventListener('{eventName}', (e: Event) => {{");
         }
         
         var indent = debounceMs > 0 ? "            " : "        ";

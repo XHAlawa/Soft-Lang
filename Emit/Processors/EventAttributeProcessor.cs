@@ -62,7 +62,7 @@ public class EventAttributeProcessor : IAttributeProcessor
         }
         
         // Generate handler function and cleanup registration
-        code.AppendLine($"    const handler_{elemVar}_{eventName} = (e) => {{");
+        code.AppendLine($"    const handler_{elemVar}_{eventName} = (e: Event) => {{");
         
         // Apply DOM event modifiers
         foreach (var modifier in modifiers)
