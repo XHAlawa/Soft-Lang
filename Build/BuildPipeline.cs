@@ -17,13 +17,16 @@ public sealed class BuildPipeline
 {
     private readonly BuildConfiguration _config;
     private readonly IDiagnosticReporter _diagnosticReporter;
+    private readonly bool _verbose;
 
     public BuildPipeline(
         BuildConfiguration config,
-        IDiagnosticReporter diagnosticReporter)
+        IDiagnosticReporter diagnosticReporter,
+        bool verbose = false)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _diagnosticReporter = diagnosticReporter ?? throw new ArgumentNullException(nameof(diagnosticReporter));
+        _verbose = verbose;
     }
 
     /// <summary>
@@ -36,6 +39,7 @@ public sealed class BuildPipeline
 
         // Step 1: Compile Soft sources to TypeScript
         Console.WriteLine("[BUILD] Step 1: Compiling Soft sources to TypeScript...");
+        if (_verbose) Console.WriteLine("[VERBOSE] Starting Soft → TypeScript compilation...");
         var compileResult = CompileSoftSources();
         if (!compileResult.Success)
         {
@@ -45,6 +49,7 @@ public sealed class BuildPipeline
 
         // Step 2: Compile TypeScript to JavaScript
         Console.WriteLine("[BUILD] Step 2: Compiling TypeScript to JavaScript...");
+        if (_verbose) Console.WriteLine("[VERBOSE] Starting TypeScript → JavaScript compilation...");
         var tsResult = CompileTypeScript();
         if (!tsResult)
         {
@@ -83,6 +88,7 @@ public sealed class BuildPipeline
     {
         Console.WriteLine("[COMPILE] Getting source path...");
         var sourcePath = _config.GetSourcePath();
+        if (_verbose) Console.WriteLine($"[VERBOSE] Source path: {sourcePath}");
         if (!Directory.Exists(sourcePath))
         {
             _diagnosticReporter.ReportError("BUILD004", $"Source directory not found: {sourcePath}", null);
@@ -91,6 +97,14 @@ public sealed class BuildPipeline
 
         Console.WriteLine($"[COMPILE] Scanning for .s files in {sourcePath}...");
         var sourceFiles = Directory.GetFiles(sourcePath, "*.s", SearchOption.AllDirectories);
+        if (_verbose)
+        {
+            Console.WriteLine($"[VERBOSE] Found {sourceFiles.Length} .s files:");
+            foreach (var file in sourceFiles)
+            {
+                Console.WriteLine($"[VERBOSE]   - {Path.GetFileName(file)}");
+            }
+        }
         if (sourceFiles.Length == 0)
         {
             _diagnosticReporter.ReportWarning("BUILD005", $"No .s files found in {sourcePath}", null);
@@ -126,6 +140,7 @@ public sealed class BuildPipeline
 
         // STAGE 3: Copy router runtime to generated folder
         Console.WriteLine("[COMPILE] Copying router runtime...");
+        if (_verbose) Console.WriteLine("[VERBOSE] Copying router.js and router.d.ts to generated folder...");
         CopyRouterToGenerated(generatedPath);
 
         // STAGE 4: Auto-register all components in the project
@@ -155,6 +170,7 @@ public sealed class BuildPipeline
         foreach (var unit in units)
         {
             Console.WriteLine($"[COMPILE] Processing {Path.GetFileName(unit.FilePath)}...");
+            if (_verbose) Console.WriteLine($"[VERBOSE] Generating TypeScript for {Path.GetFileName(unit.FilePath)}...");
             
             // Add timeout protection to prevent infinite hangs
             var cts = new System.Threading.CancellationTokenSource();
@@ -259,7 +275,7 @@ public sealed class BuildPipeline
 
     private bool CompileTypeScript()
     {
-        var tsCompiler = new TypeScriptCompilerHost(_config, _diagnosticReporter);
+        var tsCompiler = new TypeScriptCompilerHost(_config, _diagnosticReporter, _verbose);
         return tsCompiler.Compile();
     }
 

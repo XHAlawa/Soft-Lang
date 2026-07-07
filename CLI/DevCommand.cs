@@ -33,15 +33,21 @@ public sealed class DevCommand : Command
             description: "Auto-close server after N seconds of inactivity (0 = disabled, null = use soft.json)",
             getDefaultValue: () => null);
 
+        var verboseOption = new Option<bool>(
+            aliases: new[] { "--verbose", "-v" },
+            description: "Show detailed build logs",
+            getDefaultValue: () => false);
+
         AddOption(projectOption);
         AddOption(portOption);
         AddOption(openOption);
         AddOption(autocloseOption);
+        AddOption(verboseOption);
 
-        this.SetHandler(Execute, projectOption, portOption, openOption, autocloseOption);
+        this.SetHandler(Execute, projectOption, portOption, openOption, autocloseOption, verboseOption);
     }
 
-    private static void Execute(string projectRoot, int port, bool openBrowser, int? autocloseSeconds)
+    private static void Execute(string projectRoot, int port, bool openBrowser, int? autocloseSeconds, bool verbose)
     {
         var serviceProvider = BuildServiceProvider();
         var diagnosticReporter = serviceProvider.GetRequiredService<IDiagnosticReporter>();
@@ -59,7 +65,17 @@ public sealed class DevCommand : Command
 
         // Initial build
         ConsoleUtilities.WriteInfo("Building...");
-        var pipeline = new BuildPipeline(config, diagnosticReporter);
+        if (verbose)
+        {
+            Console.WriteLine($"[VERBOSE] Project root: {projectRoot}");
+            Console.WriteLine($"[VERBOSE] Source path: {config.GetSourcePath()}");
+            Console.WriteLine($"[VERBOSE] Generated path: {config.GetGeneratedPath()}");
+            Console.WriteLine($"[VERBOSE] Output path: {config.GetOutputPath()}");
+            Console.WriteLine($"[VERBOSE] Production mode: {config.IsProduction}");
+            Console.WriteLine($"[VERBOSE] Source maps: {config.EnableSourceMaps}");
+        }
+        
+        var pipeline = new BuildPipeline(config, diagnosticReporter, verbose);
         var result = pipeline.Build();
 
         PrintBuildResult(result);

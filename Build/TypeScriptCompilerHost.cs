@@ -7,11 +7,13 @@ public sealed class TypeScriptCompilerHost
 {
     private readonly BuildConfiguration _config;
     private readonly IDiagnosticReporter _diagnosticReporter;
+    private readonly bool _verbose;
 
-    public TypeScriptCompilerHost(BuildConfiguration config, IDiagnosticReporter diagnosticReporter)
+    public TypeScriptCompilerHost(BuildConfiguration config, IDiagnosticReporter diagnosticReporter, bool verbose = false)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _diagnosticReporter = diagnosticReporter ?? throw new ArgumentNullException(nameof(diagnosticReporter));
+        _verbose = verbose;
     }
 
     public bool Compile()
@@ -37,6 +39,14 @@ public sealed class TypeScriptCompilerHost
         }
 
         var args = BuildCompilerArguments();
+        
+        if (_verbose)
+        {
+            Console.WriteLine($"[VERBOSE] TypeScript compiler: {tscPath}");
+            Console.WriteLine($"[VERBOSE] Arguments: {args}");
+            Console.WriteLine($"[VERBOSE] Working directory: {_config.ProjectRoot}");
+        }
+        
         var startInfo = new ProcessStartInfo
         {
             FileName = tscPath,
@@ -59,10 +69,25 @@ public sealed class TypeScriptCompilerHost
         var outputTask = process.StandardOutput.ReadToEndAsync();
         var errorsTask = process.StandardError.ReadToEndAsync();
         
+        if (_verbose) Console.WriteLine("[VERBOSE] Waiting for TypeScript compiler to finish...");
+        var startTime = DateTime.UtcNow;
+        
         process.WaitForExit();
+        
+        var duration = (DateTime.UtcNow - startTime).TotalSeconds;
+        if (_verbose) Console.WriteLine($"[VERBOSE] TypeScript compilation took {duration:F2}s");
         
         var output = outputTask.Result;
         var errors = errorsTask.Result;
+        
+        if (_verbose && !string.IsNullOrWhiteSpace(output))
+        {
+            Console.WriteLine($"[VERBOSE] TypeScript output:\n{output}");
+        }
+        if (_verbose && !string.IsNullOrWhiteSpace(errors))
+        {
+            Console.WriteLine($"[VERBOSE] TypeScript errors:\n{errors}");
+        }
 
         // TypeScript outputs errors to stdout, not stderr
         if (!string.IsNullOrWhiteSpace(output))
