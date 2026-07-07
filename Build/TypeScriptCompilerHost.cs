@@ -55,9 +55,14 @@ public sealed class TypeScriptCompilerHost
             return false;
         }
 
-        var output = process.StandardOutput.ReadToEnd();
-        var errors = process.StandardError.ReadToEnd();
+        // CRITICAL FIX: Read output asynchronously to prevent deadlock
+        var outputTask = process.StandardOutput.ReadToEndAsync();
+        var errorsTask = process.StandardError.ReadToEndAsync();
+        
         process.WaitForExit();
+        
+        var output = outputTask.Result;
+        var errors = errorsTask.Result;
 
         // TypeScript outputs errors to stdout, not stderr
         if (!string.IsNullOrWhiteSpace(output))
