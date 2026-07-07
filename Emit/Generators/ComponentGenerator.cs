@@ -45,7 +45,21 @@ public class ComponentGenerator : INodeGenerator
         // Use instance field if in conditional/loop, otherwise local var
         if (context.ConditionalContext != null)
         {
-            var contextName = context.ConditionalContext.Replace(".", "_").Replace("this_", "").Replace("!", "not_").Replace(" ", "");
+            var contextName = context.ConditionalContext
+                .Replace(".", "_")
+                .Replace("this_", "")
+                .Replace("!", "not_")
+                .Replace(" ", "")
+                .Replace(">", "_gt_")
+                .Replace("<", "_lt_")
+                .Replace(">=", "_gte_")
+                .Replace("<=", "_lte_")
+                .Replace("==", "_eq_")
+                .Replace("===", "_seq_")
+                .Replace("!=", "_neq_")
+                .Replace("!==", "_sneq_")
+                .Replace("&&", "_and_")
+                .Replace("||", "_or_");
             code.AppendLine($"{context.Indent()}const {compVar} = new {element.TagName}();");
             code.AppendLine($"{context.Indent()}this.__if_{contextName}_comp = {compVar};");
         }

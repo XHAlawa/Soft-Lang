@@ -1,5 +1,23 @@
 {
   "profiles": {
+    "Dev (systemx3) - Verbose": {
+      "commandName": "Project",
+      "commandLineArgs": "dev --verbose --project D:\\systemx3",
+      "workingDirectory": "D:\\systemx3",
+      "environmentVariables": {}
+    },
+    "Dev (systemx3)": {
+      "commandName": "Project",
+      "commandLineArgs": "dev --project D:\\systemx3",
+      "workingDirectory": "D:\\systemx3",
+      "environmentVariables": {}
+    },
+    "Build (systemx3) - Verbose": {
+      "commandName": "Project",
+      "commandLineArgs": "build --verbose --project D:\\systemx3",
+      "workingDirectory": "D:\\systemx3",
+      "environmentVariables": {}
+    },
     "Debug Build (todo-app)": {
       "commandName": "Project",
       "commandLineArgs": "build --verbose",

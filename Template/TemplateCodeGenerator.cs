@@ -82,7 +82,7 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
         // Generate conditional component fields
         foreach (var group in conditionalComponents)
         {
-            var contextName = group.Key!.Replace(".", "_").Replace("this_", "").Replace("!", "not_").Replace(" ", "");
+            var contextName = SanitizeIdentifier(group.Key!);
             code.AppendLine($"    private __if_{contextName}_comp: {group.First().ComponentType} | null = null;");
             code.AppendLine($"    private __if_{contextName}_prev = false;");
         }
@@ -129,7 +129,7 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
         // Dispose conditional components
         foreach (var group in conditionalComponents)
         {
-            var contextName = group.Key!.Replace(".", "_").Replace("this_", "").Replace("!", "not_").Replace(" ", "");
+            var contextName = SanitizeIdentifier(group.Key!);
             code.AppendLine($"        this.__if_{contextName}_comp?.__dispose();");
         }
         
@@ -316,7 +316,7 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
     {
         var code = new StringBuilder();
         var condition = AddThisPrefix(ifNode.Condition, context.LoopVariables);
-        var contextName = condition.Replace(".", "_").Replace("this_", "").Replace("!", "not_").Replace(" ", "");
+        var contextName = SanitizeIdentifier(condition);
         
         // Track current and previous state for disposal
         code.AppendLine($"{context.Indent()}const __if_{contextName}_current = {condition};");
@@ -594,5 +594,41 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
             });
         
         return result;
+    }
+
+    private static string SanitizeIdentifier(string expression)
+    {
+        return expression
+            .Replace(".", "_")
+            .Replace("this_", "")
+            .Replace("!", "not_")
+            .Replace(" ", "")
+            .Replace(">", "_gt_")
+            .Replace("<", "_lt_")
+            .Replace(">=", "_gte_")
+            .Replace("<=", "_lte_")
+            .Replace("==", "_eq_")
+            .Replace("===", "_seq_")
+            .Replace("!=", "_neq_")
+            .Replace("!==", "_sneq_")
+            .Replace("&&", "_and_")
+            .Replace("||", "_or_")
+            .Replace("(", "_")
+            .Replace(")", "_")
+            .Replace("[", "_")
+            .Replace("]", "_")
+            .Replace("{", "_")
+            .Replace("}", "_")
+            .Replace("+", "_plus_")
+            .Replace("-", "_minus_")
+            .Replace("*", "_mul_")
+            .Replace("/", "_div_")
+            .Replace("%", "_mod_")
+            .Replace("&", "_amp_")
+            .Replace("|", "_pipe_")
+            .Replace("^", "_xor_")
+            .Replace("~", "_not_")
+            .Replace("?", "_q_")
+            .Replace(":", "_colon_");
     }
 }

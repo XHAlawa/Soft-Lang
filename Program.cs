@@ -1,29 +1,30 @@
-using Soft.Compiler.CLI;
 using System.CommandLine;
+using Soft.Compiler.CLI;
 
-namespace Soft.Compiler;
+var rootCommand = new RootCommand("Soft - TypeScript-first framework compiler");
 
-public static class Program
-{
-    public static async Task<int> Main(string[] args)
-    {
+// soft new <name>
+var newCommand = new NewCommand();
+rootCommand.AddCommand(newCommand);
 
-#if DEBUG
-        args.Append("build");
-#endif
-        var rootCommand = new RootCommand("Soft Compiler - A production-quality compiler for the Soft language");
+// soft dev
+var devCommand = new DevCommand();
+rootCommand.AddCommand(devCommand);
 
-        rootCommand.AddCommand(new BuildCommand());
-        rootCommand.AddCommand(new WatchCommand());
-        rootCommand.AddCommand(new DevCommand());
-        rootCommand.AddCommand(new CleanCommand());
-        rootCommand.AddCommand(new ParseCommand());
-        rootCommand.AddCommand(new FixCommand());
-        // Deleted commands (old architecture):
-        // - LexCommand (no longer need TypeScript lexer)
-        // - RedTreeCommand, SemanticCommand, BindCommand
-        // - DependencyCommand, IRCommand, EmitCommand
+// soft build
+var buildCommand = new BuildCommand();
+rootCommand.AddCommand(buildCommand);
 
-        return await rootCommand.InvokeAsync(args);
-    }
-}
+// soft clean
+var cleanCommand = new CleanCommand();
+rootCommand.AddCommand(cleanCommand);
+
+// soft parse <file>
+var parseCommand = new ParseCommand();
+rootCommand.AddCommand(parseCommand);
+
+// soft add component <name>
+var addCommand = new AddCommand();
+rootCommand.AddCommand(addCommand);
+
+return await rootCommand.InvokeAsync(args);
