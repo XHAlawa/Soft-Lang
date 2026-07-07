@@ -65,29 +65,53 @@ public sealed class TypeScriptCompilerHost
             return false;
         }
 
-        // CRITICAL FIX: Read output asynchronously to prevent deadlock
-        var outputTask = process.StandardOutput.ReadToEndAsync();
-        var errorsTask = process.StandardError.ReadToEndAsync();
-        
         if (_verbose) Console.WriteLine("[VERBOSE] Waiting for TypeScript compiler to finish...");
         var startTime = DateTime.UtcNow;
+        
+        // Stream output in real-time if verbose
+        var outputBuilder = new System.Text.StringBuilder();
+        var errorBuilder = new System.Text.StringBuilder();
+        
+        if (_verbose)
+        {
+            process.OutputDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    Console.WriteLine($"[TS] {e.Data}");
+                    outputBuilder.AppendLine(e.Data);
+                }
+            };
+            process.ErrorDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    Console.WriteLine($"[TS ERROR] {e.Data}");
+                    errorBuilder.AppendLine(e.Data);
+                }
+            };
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+        }
+        else
+        {
+            // CRITICAL FIX: Read output asynchronously to prevent deadlock
+            var outputTask = process.StandardOutput.ReadToEndAsync();
+            var errorsTask = process.StandardError.ReadToEndAsync();
+            
+            process.WaitForExit();
+            
+            outputBuilder.Append(outputTask.Result);
+            errorBuilder.Append(errorsTask.Result);
+        }
         
         process.WaitForExit();
         
         var duration = (DateTime.UtcNow - startTime).TotalSeconds;
         if (_verbose) Console.WriteLine($"[VERBOSE] TypeScript compilation took {duration:F2}s");
         
-        var output = outputTask.Result;
-        var errors = errorsTask.Result;
-        
-        if (_verbose && !string.IsNullOrWhiteSpace(output))
-        {
-            Console.WriteLine($"[VERBOSE] TypeScript output:\n{output}");
-        }
-        if (_verbose && !string.IsNullOrWhiteSpace(errors))
-        {
-            Console.WriteLine($"[VERBOSE] TypeScript errors:\n{errors}");
-        }
+        var output = outputBuilder.ToString();
+        var errors = errorBuilder.ToString();
 
         // TypeScript outputs errors to stdout, not stderr
         if (!string.IsNullOrWhiteSpace(output))
