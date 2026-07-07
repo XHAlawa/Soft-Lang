@@ -4,6 +4,8 @@ using Soft.Compiler.Emit.Generators;
 using Soft.Compiler.Emit.Processors;
 using Soft.Compiler.Components;
 using Soft.Compiler.Parser;
+using Soft.Compiler.Template.Analysis;
+using Soft.Compiler.Template.Generators;
 
 namespace Soft.Compiler.Template;
 
@@ -17,10 +19,14 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
     private readonly List<IAttributeProcessor> _processors;
     private readonly ComponentRegistry _componentRegistry;
     private Semantics.PageSymbolTable? _symbolTable;
+    private readonly StaticContentAnalyzer _staticAnalyzer;
+    private readonly HtmlStringGenerator _htmlGenerator;
     
     public TemplateCodeGenerator(ComponentRegistry? componentRegistry = null)
     {
         _componentRegistry = componentRegistry ?? new ComponentRegistry();
+        _staticAnalyzer = new StaticContentAnalyzer();
+        _htmlGenerator = new HtmlStringGenerator();
         
         // Setup processors
         _processors = new List<IAttributeProcessor>
@@ -168,21 +174,9 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
         
         // Generate render method signature
         code.AppendLine("public __render(container: HTMLElement): void {");
-        code.AppendLine("    // Store container reference for re-renders");
         code.AppendLine("    this.__container = container;");
-        code.AppendLine("    // Cancel any pending render to prevent double-rendering");
         code.AppendLine("    this.__renderScheduled = false;");
-        code.AppendLine();
-        code.AppendLine("    // Differential DOM update: only rebuild if first render or structure changed");
-        code.AppendLine("    const isFirstRender = !this.__mounted || container.children.length === 0;");
-        code.AppendLine("    ");
-        code.AppendLine("    if (isFirstRender) {");
-        code.AppendLine("        // First render: build full DOM");
-        code.AppendLine("        container.innerHTML = '';");
-        code.AppendLine("    } else {");
-        code.AppendLine("        // Subsequent renders: preserve DOM structure, only update dynamic content");
-        code.AppendLine("        // Focus preservation is automatic since we don't destroy elements");
-        code.AppendLine("    }");
+        code.AppendLine("    container.innerHTML = '';");
         code.AppendLine();
         
         // Generate DOM nodes
@@ -239,7 +233,13 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
             return GenerateSwitchWithChildren(switchDir, context);
         }
         
-        // Try each generator
+        // Check if this element has static content we can optimize
+        if (node is TemplateElement element && _staticAnalyzer.IsStatic(element))
+        {
+            return GenerateStaticElement(element, context);
+        }
+        
+        // Try each generator for dynamic content
         foreach (var generator in _generators)
         {
             if (generator.CanGenerate(node))
@@ -247,7 +247,7 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
                 var result = new StringBuilder(generator.Generate(node, context));
                 
                 // Handle children for elements
-                if (node is TemplateElement element && element.ChildNodes.Any())
+                if (node is TemplateElement elem && elem.ChildNodes.Any())
                 {
                     // Determine parent variable for children
                     string childParent = context.ParentVar;
@@ -616,5 +616,28 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
             .Replace("~", "_not_")
             .Replace("?", "_q_")
             .Replace(":", "_colon_");
+    }
+    
+    private string GenerateStaticElement(TemplateElement element, CodeGenerationContext context)
+    {
+        var code = new StringBuilder();
+        var elemVar = context.NextVar();
+        
+        // Generate HTML string for entire static subtree
+        var html = _htmlGenerator.GenerateHtml(new List<TemplateNode> { element });
+        
+        // Escape for JavaScript string
+        var escapedHtml = html
+            .Replace("\\", "\\\\")
+            .Replace("'", "\\'")
+            .Replace("\r", "")
+            .Replace("\n", "\\n");
+        
+        // Create container and set innerHTML
+        code.AppendLine($"{context.Indent()}const {elemVar} = document.createElement('div');");
+        code.AppendLine($"{context.Indent()}{elemVar}.innerHTML = '{escapedHtml}';");
+        code.AppendLine($"{context.Indent()}{context.ParentVar}.appendChild({elemVar}.firstElementChild!);");
+        
+        return code.ToString();
     }
 }
