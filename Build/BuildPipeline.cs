@@ -142,6 +142,10 @@ public sealed class BuildPipeline
         Console.WriteLine("[COMPILE] Copying router runtime...");
         if (_verbose) Console.WriteLine("[VERBOSE] Copying router.js and router.d.ts to generated folder...");
         CopyRouterToGenerated(generatedPath);
+        
+        // Copy SoftComponent base class
+        Console.WriteLine("[COMPILE] Copying SoftComponent runtime...");
+        CopySoftComponentToGenerated(generatedPath);
 
         // STAGE 4: Auto-register all components in the project
         Console.WriteLine("[COMPILE] Registering components...");
@@ -246,6 +250,22 @@ public sealed class BuildPipeline
             var destTypeDefPath = Path.Combine(generatedPath, "router.d.ts");
             File.Copy(typeDefPath, destTypeDefPath, overwrite: true);
         }
+    }
+    
+    private void CopySoftComponentToGenerated(string generatedPath)
+    {
+        var runtimeDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Runtime");
+        var runtimePath = Path.Combine(runtimeDir, "SoftComponent.ts");
+        
+        if (!File.Exists(runtimePath))
+        {
+            throw new FileNotFoundException("SoftComponent.ts not found in Runtime folder");
+        }
+        
+        var destPath = Path.Combine(generatedPath, "SoftComponent.ts");
+        File.Copy(runtimePath, destPath, overwrite: true);
+        
+        if (_verbose) Console.WriteLine($"[VERBOSE] Copied SoftComponent.ts to {destPath}");
     }
 
     private bool ProcessSoftFile(SoftFileUnit unit, string outputDir, Semantics.PageSymbolTable symbolTable, Components.ComponentRegistry componentRegistry)

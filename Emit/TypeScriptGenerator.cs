@@ -22,6 +22,10 @@ public sealed class TypeScriptGenerator
     {
         var writer = new CodeWriter();
         
+        // Import SoftComponent base class
+        writer.WriteLine("import { SoftComponent } from './SoftComponent.js';");
+        writer.WriteLine();
+        
         // Import __router for pages
         if (unit.PageMetadata != null && unit.PageMetadata.Routes.Any())
         {
@@ -156,43 +160,10 @@ public sealed class TypeScriptGenerator
                         if (classClosingBrace > 0)
                         {
                             // Prepare the injected code (including template code)
+                            // Runtime methods now inherited from SoftComponent base class
                             var injectedCode = "\n    // Router properties (injected at runtime)\n" +
                                               "    $route?: any;\n" +
                                               "    $navigate?: any;\n" +
-                                              "\n    // Lifecycle state\n" +
-                                              "    private __mounted = false;\n" +
-                                              "    private __container?: HTMLElement;\n" +
-                                              "    private __cacheStore = new Map<string, any>();\n" +
-                                              "    private __cleanup: (() => void)[] = [];\n" +
-                                              "    private __validationErrors?: Record<string, string | null>;\n" +
-                                              "    private __touchedFields?: Record<string, boolean>;\n" +
-                                              "    private __renderScheduled = false;\n" +
-                                              "\n    // Schedule render with debouncing to prevent multiple queued renders\n" +
-                                              "    private __scheduleRender(): void {\n" +
-                                              "        if (this.__renderScheduled) return;\n" +
-                                              "        this.__renderScheduled = true;\n" +
-                                              "        queueMicrotask(() => {\n" +
-                                              "            if (this.__mounted && this.__container) {\n" +
-                                              "                this.__render(this.__container);\n" +
-                                              "            }\n" +
-                                              "        });\n" +
-                                              "    }\n" +
-                                              "\n    // Localization helper\n" +
-                                              "    private __localize(key: string, fallback?: string): string {\n" +
-                                              "        // Import localize function dynamically or use global\n" +
-                                              "        return (globalThis as any).__softLocalize?.(key, fallback) || fallback || key;\n" +
-                                              "    }\n" +
-                                              "\n    // Component disposal (compiler-generated)\n" +
-                                              "    __dispose(): void {\n" +
-                                              "        // Dispose children first\n" +
-                                              "        (this as any).__disposeChildren?.();\n" +
-                                              "        \n" +
-                                              "        // Then own cleanup\n" +
-                                              "        (this as any).onDestroy?.();\n" +
-                                              "        this.__cleanup.forEach(fn => fn());\n" +
-                                              "        this.__cleanup = [];\n" +
-                                              "        this.__mounted = false;\n" +
-                                              "    }\n" +
                                               "\n    // Auto-generated template rendering code\n" +
                                               IndentCode(templateCode, 1);
                             
@@ -352,46 +323,14 @@ public sealed class TypeScriptGenerator
         {
             // Template exists but no @Code block - generate minimal class
             var className = unit.ClassName ?? Path.GetFileNameWithoutExtension(unit.FilePath);
-            writer.WriteLine($"export class {className} {{");
+            writer.WriteLine($"export class {className} extends SoftComponent {{");
             
             var templateCode = GenerateTemplateCode(unit.TemplateContent, className, unit.FilePath, unit, _currentSymbolTable);
             
+            // Runtime methods now inherited from SoftComponent base class
             var injectedCode = "\n    // Router properties (injected at runtime)\n" +
                               "    $route?: any;\n" +
                               "    $navigate?: any;\n" +
-                              "\n    // Lifecycle state\n" +
-                              "    private __mounted = false;\n" +
-                              "    private __container?: HTMLElement;\n" +
-                              "    private __cacheStore = new Map<string, any>();\n" +
-                              "    private __cleanup: (() => void)[] = [];\n" +
-                              "    private __validationErrors?: Record<string, string | null>;\n" +
-                              "    private __touchedFields?: Record<string, boolean>;\n" +
-                              "    private __renderScheduled = false;\n" +
-                              "\n    // Schedule render with debouncing to prevent multiple queued renders\n" +
-                              "    private __scheduleRender(): void {\n" +
-                              "        if (this.__renderScheduled) return;\n" +
-                              "        this.__renderScheduled = true;\n" +
-                              "        queueMicrotask(() => {\n" +
-                              "            if (this.__mounted && this.__container) {\n" +
-                              "                this.__render(this.__container);\n" +
-                              "            }\n" +
-                              "        });\n" +
-                              "    }\n" +
-                              "\n    // Localization helper\n" +
-                              "    private __localize(key: string, fallback?: string): string {\n" +
-                              "        return (globalThis as any).__softLocalize?.(key, fallback) || fallback || key;\n" +
-                              "    }\n" +
-                              "\n    // Component disposal (compiler-generated)\n" +
-                              "    __dispose(): void {\n" +
-                              "        // Dispose children first\n" +
-                              "        (this as any).__disposeChildren?.();\n" +
-                              "        \n" +
-                              "        // Then own cleanup\n" +
-                              "        (this as any).onDestroy?.();\n" +
-                              "        this.__cleanup.forEach(fn => fn());\n" +
-                              "        this.__cleanup = [];\n" +
-                              "        this.__mounted = false;\n" +
-                              "    }\n" +
                               "\n    // Auto-generated template rendering code\n" +
                               IndentCode(templateCode, 1);
             
@@ -485,7 +424,7 @@ public sealed class TypeScriptGenerator
         
         // Wrap code in a class declaration with proper indentation
         var indentedCode = IndentCode(code, 1);
-        return $"export class {className} {{\n{indentedCode}\n}}";
+        return $"export class {className} extends SoftComponent {{\n{indentedCode}\n}}";
     }
     
     private string EnsureClassIsExported(string code)
@@ -502,7 +441,7 @@ public sealed class TypeScriptGenerator
         return System.Text.RegularExpressions.Regex.Replace(
             code,
             @"^(\s*)class\s+(\w+)",
-            "$1export class $2",
+            "$1export class $2 extends SoftComponent",
             System.Text.RegularExpressions.RegexOptions.Multiline
         );
     }
