@@ -105,7 +105,17 @@ public sealed class TypeScriptCompilerHost
             errorBuilder.Append(errorsTask.Result);
         }
         
-        process.WaitForExit();
+        // Add timeout: 60 seconds for TypeScript compilation
+        var timeout = TimeSpan.FromSeconds(60);
+        if (!process.WaitForExit((int)timeout.TotalMilliseconds))
+        {
+            process.Kill(true);
+            _diagnosticReporter.ReportError(
+                "BUILD004",
+                $"TypeScript compilation timed out after {timeout.TotalSeconds} seconds. This usually indicates a configuration issue with tsconfig.json or circular dependencies.",
+                null);
+            return false;
+        }
         
         var duration = (DateTime.UtcNow - startTime).TotalSeconds;
         if (_verbose) Console.WriteLine($"[VERBOSE] TypeScript compilation took {duration:F2}s");

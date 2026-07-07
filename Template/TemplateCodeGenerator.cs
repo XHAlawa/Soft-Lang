@@ -244,31 +244,37 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
         {
             if (generator.CanGenerate(node))
             {
-                var result = generator.Generate(node, context);
+                var result = new StringBuilder(generator.Generate(node, context));
                 
-                // Handle children for container nodes
-                if (node is TemplateElement element)
+                // Handle children for elements
+                if (node is TemplateElement element && element.ChildNodes.Any())
                 {
-                    // For components with slots, use the slot array as parent
-                    string parentVar = context.ParentVar;
-                    if (result.Contains("slotContent_"))
+                    // Determine parent variable for children
+                    string childParent = context.ParentVar;
+                    
+                    // For components with slots
+                    if (result.ToString().Contains("slotContent_"))
                     {
-                        // Extract slot variable name (e.g., "slotContent_el3")
-                        var slotMatch = System.Text.RegularExpressions.Regex.Match(result, @"const (slotContent_\w+) = \[\]");
-                        if (slotMatch.Success)
+                        var match = System.Text.RegularExpressions.Regex.Match(result.ToString(), @"const (slotContent_\w+) = \[\]");
+                        if (match.Success)
                         {
-                            parentVar = slotMatch.Groups[1].Value;
+                            childParent = match.Groups[1].Value;
                         }
                     }
-                    else if (result.Contains("const el"))
+                    // For regular elements, extract element variable
+                    else if (result.ToString().Contains("let el"))
                     {
-                        // Regular element
-                        parentVar = result.Split("const ")[1].Split(' ')[0];
+                        var match = System.Text.RegularExpressions.Regex.Match(result.ToString(), @"let (el\d+):");
+                        if (match.Success)
+                        {
+                            childParent = match.Groups[1].Value;
+                        }
                     }
                     
+                    // Generate children with proper parent context
                     var childContext = new CodeGenerationContext
                     {
-                        ParentVar = parentVar,
+                        ParentVar = childParent,
                         ClassName = context.ClassName,
                         IndentLevel = context.IndentLevel,
                         LoopVariables = context.LoopVariables,
@@ -278,34 +284,14 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
                         ComponentInstances = context.ComponentInstances
                     };
                     
-                    var childCode = new StringBuilder();
+                    // Generate children AFTER element creation
                     foreach (var child in element.ChildNodes)
                     {
-                        childCode.Append(GenerateNode(child, childContext));
-                    }
-                    
-                    // Insert children before appendChild or push
-                    // For components with slots, insert before the slot array push
-                    // For regular elements, insert before the parent appendChild
-                    if (result.Contains(".push("))
-                    {
-                        // Component with slot - find the line with push and insert before it
-                        var lines = result.Split('\n').ToList();
-                        var pushLineIndex = lines.FindLastIndex(l => l.Contains(".push("));
-                        if (pushLineIndex > 0)
-                        {
-                            lines.Insert(pushLineIndex, childCode.ToString().TrimEnd('\n', '\r'));
-                            result = string.Join("\n", lines);
-                        }
-                    }
-                    else if (result.Contains($"{context.ParentVar}.appendChild"))
-                    {
-                        result = result.Replace($"{context.ParentVar}.appendChild", 
-                            childCode.ToString() + $"{context.ParentVar}.appendChild");
+                        result.Append(GenerateNode(child, childContext));
                     }
                 }
                 
-                return result;
+                return result.ToString();
             }
         }
         
