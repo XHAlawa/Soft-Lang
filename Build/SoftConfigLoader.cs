@@ -9,6 +9,8 @@ public static class SoftConfigLoader
         var configPath = Path.Combine(projectRoot, "soft.json");
         
         string? mainFile = null;
+        int autoCloseTimeout = 600; // 10 minutes default
+        string[]? globalStyles = null;
         
         if (File.Exists(configPath))
         {
@@ -21,6 +23,8 @@ public static class SoftConfigLoader
                 });
                 
                 mainFile = config?.Main;
+                autoCloseTimeout = config?.AutoCloseTimeout ?? 600;
+                globalStyles = config?.GlobalStyles;
             }
             catch
             {
@@ -32,11 +36,15 @@ public static class SoftConfigLoader
             projectRoot,
             mainFile: mainFile,
             isProduction: isProduction,
-            enableSourceMaps: enableSourceMaps);
+            enableSourceMaps: enableSourceMaps,
+            autoCloseTimeout: autoCloseTimeout,
+            globalStyles: globalStyles);
     }
     
     private class SoftJsonConfig
     {
         public string? Main { get; set; }
+        public int? AutoCloseTimeout { get; set; }
+        public string[]? GlobalStyles { get; set; }
     }
 }

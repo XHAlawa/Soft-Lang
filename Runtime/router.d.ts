@@ -21,9 +21,17 @@ export interface RouteMetadata {
 }
 
 export class SoftRouter {
-    constructor(runtime: any);
+    constructor();
+    routes: RouteMetadata[];
+    currentParams: RouteParams;
+    currentQuery: QueryParams;
+    currentState: Record<string, any>;
+    container: HTMLElement | null;
+    currentComponent: any;
+    isStarted: boolean;
+    
     setContainer(container: HTMLElement): void;
-    register(pattern: string, component: any): void;
+    register(pattern: string, component: any, options?: { canonical?: boolean }): void;
     navigate(route: string, params?: Record<string, any>, query?: Record<string, string | string[]>, options?: NavigationOptions): Promise<void>;
     replace(route: string, params?: Record<string, any>, query?: Record<string, string | string[]>, state?: Record<string, any>): Promise<void>;
     start(initialRoute?: string): Promise<void>;
@@ -32,3 +40,5 @@ export class SoftRouter {
     getParams(): RouteParams;
     getQuery(): QueryParams;
 }
+
+export const __router: SoftRouter;

@@ -41,7 +41,9 @@ public class NewCommand : Command
           "name": "{{name}}",
           "version": "1.0.0",
           "outputDir": "generated",
-          "entry": "src/App.s"
+          "entry": "src/App.s",
+          "autoCloseTimeout": 600,
+          "globalStyles": []
         }
         """;
         await File.WriteAllTextAsync(Path.Combine(projectDir, "soft.json"), config);

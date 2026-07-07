@@ -320,7 +320,8 @@ public sealed class BuildPipeline
         {
             Title = GetProjectTitle(),
             ContainerId = "app",
-            BundleFileName = bundleFileName
+            BundleFileName = bundleFileName,
+            StyleSheets = _config.GlobalStyles.ToList()
         };
 
         var html = htmlGenerator.Generate(htmlOptions);

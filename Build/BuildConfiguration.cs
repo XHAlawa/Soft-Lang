@@ -9,6 +9,8 @@ public sealed class BuildConfiguration
     public string? MainFile { get; }
     public bool IsProduction { get; }
     public bool EnableSourceMaps { get; }
+    public int AutoCloseTimeout { get; }
+    public string[] GlobalStyles { get; }
 
     public BuildConfiguration(
         string projectRoot,
@@ -17,7 +19,9 @@ public sealed class BuildConfiguration
         string outputDirectory = "dist",
         string? mainFile = null,
         bool isProduction = false,
-        bool enableSourceMaps = true)
+        bool enableSourceMaps = true,
+        int autoCloseTimeout = 600,
+        string[]? globalStyles = null)
     {
         ProjectRoot = projectRoot ?? throw new ArgumentNullException(nameof(projectRoot));
         SourceDirectory = sourceDirectory ?? "src";
@@ -26,6 +30,8 @@ public sealed class BuildConfiguration
         MainFile = mainFile;
         IsProduction = isProduction;
         EnableSourceMaps = enableSourceMaps;
+        AutoCloseTimeout = autoCloseTimeout;
+        GlobalStyles = globalStyles ?? Array.Empty<string>();
     }
 
     public string GetSourcePath() => Path.Combine(ProjectRoot, SourceDirectory);

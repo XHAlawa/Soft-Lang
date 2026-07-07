@@ -28,10 +28,10 @@ public sealed class DevCommand : Command
             description: "Open browser automatically",
             getDefaultValue: () => true);
 
-        var autocloseOption = new Option<int>(
+        var autocloseOption = new Option<int?>(
             aliases: new[] { "--autoclose" },
-            description: "Auto-close server after N seconds of inactivity (0 = disabled)",
-            getDefaultValue: () => 20);
+            description: "Auto-close server after N seconds of inactivity (0 = disabled, null = use soft.json)",
+            getDefaultValue: () => null);
 
         AddOption(projectOption);
         AddOption(portOption);
@@ -41,7 +41,7 @@ public sealed class DevCommand : Command
         this.SetHandler(Execute, projectOption, portOption, openOption, autocloseOption);
     }
 
-    private static void Execute(string projectRoot, int port, bool openBrowser, int autocloseSeconds)
+    private static void Execute(string projectRoot, int port, bool openBrowser, int? autocloseSeconds)
     {
         var serviceProvider = BuildServiceProvider();
         var diagnosticReporter = serviceProvider.GetRequiredService<IDiagnosticReporter>();
@@ -91,7 +91,8 @@ public sealed class DevCommand : Command
         {
             // Auto-close tracking
             var lastActivity = DateTime.UtcNow;
-            var autocloseMs = autocloseSeconds > 0 ? autocloseSeconds * 1000 : 0;
+            var effectiveTimeout = autocloseSeconds ?? config.AutoCloseTimeout;
+            var autocloseMs = effectiveTimeout > 0 ? effectiveTimeout * 1000 : 0;
 
             using var watcher = new FileWatcher(sourcePath, filePath =>
             {
@@ -114,9 +115,10 @@ public sealed class DevCommand : Command
             watcher.Start();
 
             Console.WriteLine();
-            if (autocloseSeconds > 0)
+            if (effectiveTimeout > 0)
             {
-                ConsoleUtilities.WriteInfo($"Watching for changes... (Auto-close after {autocloseSeconds}s inactivity, Ctrl+C to stop)");
+                var timeoutDisplay = effectiveTimeout >= 60 ? $"{effectiveTimeout / 60}min" : $"{effectiveTimeout}s";
+                ConsoleUtilities.WriteInfo($"Watching for changes... (Auto-close after {timeoutDisplay} inactivity, Ctrl+C to stop)");
             }
             else
             {
@@ -132,14 +134,15 @@ public sealed class DevCommand : Command
                 exitEvent.Set();
             };
 
-            if (autocloseSeconds > 0)
+            if (effectiveTimeout > 0)
             {
                 var timer = new System.Threading.Timer(_ =>
                 {
                     var idle = (DateTime.UtcNow - lastActivity).TotalMilliseconds;
                     if (idle >= autocloseMs)
                     {
-                        ConsoleUtilities.WriteInfo($"Auto-close: {autocloseSeconds}s of inactivity reached. Shutting down.");
+                        var timeoutDisplay = effectiveTimeout >= 60 ? $"{effectiveTimeout / 60}min" : $"{effectiveTimeout}s";
+                        ConsoleUtilities.WriteInfo($"Auto-close: {timeoutDisplay} of inactivity reached. Shutting down.");
                         exitEvent.Set();
                     }
                 }, null, 1000, 1000);
