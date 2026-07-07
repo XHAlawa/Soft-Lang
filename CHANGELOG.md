@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.0.3] - 2026-07-07 🔧
+
+### 🐛 Critical Bug Fix
+
+**ROOT CAUSE IDENTIFIED AND FIXED**
+
+**Problem:**
+- `router.d.ts` type definition file was created but NOT being copied to generated folder
+- TypeScript compiler couldn't find type declarations for `./router.js`
+- Error: `TS7016: Could not find a declaration file for module './router.js'`
+
+**Solution:**
+- Updated `BuildPipeline.cs` to copy `router.d.ts` alongside `router.js`
+- Updated `Soft.Compiler.csproj` to include `router.d.ts` in build output
+- Both files now copied to `generated/` and `dist/` folders
+
+**Files Changed:**
+- `Build/BuildPipeline.cs` - Added router.d.ts copying logic
+- `Soft.Compiler.csproj` - Added router.d.ts to CopyToOutputDirectory
+
+**Now Works:**
+✅ `router.js` + `router.d.ts` both copied  
+✅ TypeScript finds type declarations  
+✅ No TS7016 errors  
+✅ Clean compilation  
+
+---
+
 ## [1.0.2] - 2026-07-07 🔧
 
 ### 🐛 Critical Bug Fixes

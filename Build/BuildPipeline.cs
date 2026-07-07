@@ -221,6 +221,15 @@ public sealed class BuildPipeline
         
         var destPath = Path.Combine(generatedPath, "router.js");
         File.Copy(runtimePath, destPath, overwrite: true);
+        
+        // Copy router.d.ts for TypeScript type checking
+        var runtimeDir = Path.GetDirectoryName(runtimePath);
+        var typeDefPath = Path.Combine(runtimeDir!, "router.d.ts");
+        if (File.Exists(typeDefPath))
+        {
+            var destTypeDefPath = Path.Combine(generatedPath, "router.d.ts");
+            File.Copy(typeDefPath, destTypeDefPath, overwrite: true);
+        }
     }
 
     private bool ProcessSoftFile(SoftFileUnit unit, string outputDir, Semantics.PageSymbolTable symbolTable, Components.ComponentRegistry componentRegistry)
@@ -317,12 +326,19 @@ public sealed class BuildPipeline
         var html = htmlGenerator.Generate(htmlOptions);
         File.WriteAllText(Path.Combine(distPath, "index.html"), html);
 
-        // Copy router.js from generated to dist
+        // Copy router.js and router.d.ts from generated to dist
         var generatedRouterPath = Path.Combine(_config.GetGeneratedPath(), "router.js");
         var distRouterPath = Path.Combine(distPath, "router.js");
         if (File.Exists(generatedRouterPath))
         {
             File.Copy(generatedRouterPath, distRouterPath, overwrite: true);
+        }
+        
+        var generatedRouterTypesPath = Path.Combine(_config.GetGeneratedPath(), "router.d.ts");
+        var distRouterTypesPath = Path.Combine(distPath, "router.d.ts");
+        if (File.Exists(generatedRouterTypesPath))
+        {
+            File.Copy(generatedRouterTypesPath, distRouterTypesPath, overwrite: true);
         }
 
         // Copy public assets if they exist

@@ -7,9 +7,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <AssemblyName>soft</AssemblyName>
-    <Version>1.0.2</Version>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
+    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
     <Product>Soft Compiler</Product>
     <Description>Modern TypeScript preprocessor with reactive templating, forms, routing, and component system</Description>
     <Copyright>Copyright © 2026</Copyright>
@@ -27,6 +27,7 @@
   <ItemGroup>
     <!-- Bug #25: Copy Runtime files to output directory -->
     <None Include="Runtime\router.js" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Runtime\router.d.ts" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Runtime\router.ts" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Runtime\runtime.js" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Runtime\runtime.ts" CopyToOutputDirectory="PreserveNewest" />
