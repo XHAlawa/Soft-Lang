@@ -51,13 +51,14 @@ public class NewCommand : Command
         {
           "name": "{{name}}",
           "version": "1.0.0",
+          "type": "module",
           "scripts": {
             "dev": "soft dev",
             "build": "soft build"
           },
           "devDependencies": {
-            "@soft/compiler": "^1.0.0",
-            "typescript": "^5.0.0"
+            "typescript": "^5.0.0",
+            "esbuild": "^0.19.0"
           }
         }
         """;
@@ -180,6 +181,8 @@ public class NewCommand : Command
         Console.WriteLine($"\n✅ Project created successfully!");
         Console.WriteLine($"\nNext steps:");
         Console.WriteLine($"  cd {name}");
+        Console.WriteLine($"  soft dev");
+        Console.WriteLine($"\nOr with npm:");
         Console.WriteLine($"  npm install");
         Console.WriteLine($"  npm run dev");
     }
