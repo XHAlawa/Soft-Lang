@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.2] - 2026-07-07 🔧
+
+### 🐛 Critical Bug Fixes
+
+**Fixed TypeScript Compilation Errors**
+- Added type annotations for event handlers `(e: Event)` instead of `(e)`
+- Created `router.d.ts` type definitions file
+- Fixed "implicitly has 'any' type" errors
+- Projects now compile without TypeScript errors
+
+**What was broken:**
+- New projects failed to compile with TS7006 and TS7016 errors
+- Event handlers had implicit 'any' types
+- Router module had no type declarations
+
+**Now fixed:**
+- All generated code is properly typed
+- Clean TypeScript compilation
+- No type errors in new projects
+
+---
+
 ## [1.0.1] - 2026-07-07 🔧
 
 ### 🐛 Bug Fixes
