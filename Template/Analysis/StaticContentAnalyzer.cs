@@ -36,13 +36,42 @@ public class StaticContentAnalyzer
             return false;
         }
         
-        // Has dynamic children?
+        // Recursively check ALL descendants for dynamic content
         if (!element.ChildNodes.All(IsStatic))
         {
             return false;
         }
         
+        // Additional check: recursively verify no descendant has @ attributes
+        if (HasDynamicDescendants(element))
+        {
+            return false;
+        }
+        
         return true;
+    }
+    
+    private bool HasDynamicDescendants(TemplateElement element)
+    {
+        foreach (var child in element.ChildNodes)
+        {
+            if (child is TemplateElement childElement)
+            {
+                // Check if this child has @ attributes
+                if (childElement.Attributes.Any(a => a.Name.StartsWith("@")))
+                {
+                    return true;
+                }
+                
+                // Recursively check grandchildren
+                if (HasDynamicDescendants(childElement))
+                {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
     
     public List<TemplateNode> GetStaticSubtree(TemplateElement element)
