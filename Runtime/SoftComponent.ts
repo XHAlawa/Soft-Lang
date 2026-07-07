@@ -39,4 +39,33 @@ export abstract class SoftComponent {
 
     // Abstract render method - implemented by generated code
     abstract __render(container: HTMLElement): void;
+    
+    // Helper: Create element with attributes and events in one call
+    protected createElement<K extends keyof HTMLElementTagNameMap>(
+        tag: K,
+        attrs?: Record<string, string>,
+        events?: Record<string, (e: Event) => void>,
+        parent?: HTMLElement
+    ): HTMLElementTagNameMap[K] {
+        const el = document.createElement(tag);
+        
+        if (attrs) {
+            for (const [key, value] of Object.entries(attrs)) {
+                el.setAttribute(key, value);
+            }
+        }
+        
+        if (events) {
+            for (const [event, handler] of Object.entries(events)) {
+                el.addEventListener(event, handler);
+                this.__cleanup.push(() => el.removeEventListener(event, handler));
+            }
+        }
+        
+        if (parent) {
+            parent.appendChild(el);
+        }
+        
+        return el;
+    }
 }
