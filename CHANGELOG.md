@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.0.4] - 2026-07-07 🛠️
+
+### ✨ New Feature - Migration Support
+
+**Added `soft fix` Command**
+
+**Problem:**
+- Users with existing projects (even 1000+ files) would need to recreate projects
+- Unacceptable to lose work just for a compiler update
+
+**Solution:**
+- New `soft fix` command automatically migrates existing projects
+- Copies missing `router.d.ts` to `generated/` and `dist/` folders
+- Works on any existing Soft project without losing files
+
+**Usage:**
+```bash
+cd your-existing-project
+soft fix
+```
+
+**Output:**
+```
+✅ Fixed! Copied router.d.ts to generated folder
+✅ Project fixed! You can now run: soft dev
+```
+
+**Files Added:**
+- `CLI/FixCommand.cs` - Migration command implementation
+
+---
+
 ## [1.0.3] - 2026-07-07 🔧
 
 ### 🐛 Critical Bug Fix

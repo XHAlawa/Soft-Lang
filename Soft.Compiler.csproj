@@ -7,9 +7,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <AssemblyName>soft</AssemblyName>
-    <Version>1.0.3</Version>
-    <AssemblyVersion>1.0.3.0</AssemblyVersion>
-    <FileVersion>1.0.3.0</FileVersion>
+    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.4.0</AssemblyVersion>
+    <FileVersion>1.0.4.0</FileVersion>
     <Product>Soft Compiler</Product>
     <Description>Modern TypeScript preprocessor with reactive templating, forms, routing, and component system</Description>
     <Copyright>Copyright © 2026</Copyright>

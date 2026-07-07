@@ -18,6 +18,7 @@ public static class Program
         rootCommand.AddCommand(new DevCommand());
         rootCommand.AddCommand(new CleanCommand());
         rootCommand.AddCommand(new ParseCommand());
+        rootCommand.AddCommand(new FixCommand());
         // Deleted commands (old architecture):
         // - LexCommand (no longer need TypeScript lexer)
         // - RedTreeCommand, SemanticCommand, BindCommand
