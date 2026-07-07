@@ -32,6 +32,7 @@
     <None Include="Runtime\router.ts" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Runtime\runtime.js" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Runtime\runtime.ts" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Runtime\SoftComponent.ts" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
