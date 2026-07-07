@@ -49,6 +49,7 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
             new ErrorBoundaryGenerator(),          // <ErrorBoundary> (must be first)
             new SlotGenerator(),                   // <slot> (before components)
             new ComponentGenerator(_componentRegistry),
+            new TextNodeGenerator(),               // Optimized text nodes
             new ElementGenerator(_processors),
             // DirectiveGenerator removed - directives handled by orchestrator with proper child context
             new LocalizationGenerator(),           // @L('key') localization
