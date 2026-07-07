@@ -286,7 +286,7 @@ public sealed class TemplateCodeGenerator : ICodeGenerator
                     };
                     
                     // Generate children AFTER element creation
-                    foreach (var child in element.ChildNodes)
+                    foreach (var child in elem.ChildNodes)
                     {
                         result.Append(GenerateNode(child, childContext));
                     }
